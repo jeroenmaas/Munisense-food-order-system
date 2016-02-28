@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-9">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Menu list</th>
+                    <th>Enabled</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="location in locations">
+                    <td><span editable-text="location.description" onaftersave="updateLocation(location)"> {{ location.description || 'empty' }} </span></td>
+                    <td><a href="location/{{location._id}}">{{orderAbleCount(location._id) ? orderAbleCount(location._id) : "0"}}</a></td>
+                    <td>
+                        <select class="form-control" ng-model="location.enabled" ng-change="updateLocation(location)">
+                            <option></option>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default btn-sm" ng-click="removeLocation(location)">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Add location</h3>
+            </div>
+            <div class="panel-body">
+                <form>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" ng-model="newLocation.description">
+                    </div>
+                    <div class="form-group">
+                        <label>Enabled</label>
+                        <select class="form-control" ng-model="newLocation.enabled">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <a class="btn btn-default" style="float: right" ng-click="addLocation()">Submit</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

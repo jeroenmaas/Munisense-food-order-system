@@ -1,0 +1,108 @@
+<div class="row">
+    <div class="col-md-9">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">My order ({{myOrders.length}})</a></li>
+            <li role="presentation"><a href="#orders" aria-controls="profile" role="tab" data-toggle="tab">All orders ({{orders.length}})</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="groupedOrder in prepareToFilter(myOrders) | filter:groupOrders">
+                            <td>{{getOrderWithOrderAbleId(myOrders, groupedOrder.orderAbleId).length}}</td>
+                            <td>{{getOrderAbleById(groupedOrder.orderAbleId).description}}</td>
+                            <td>{{getOrderAbleById(groupedOrder.orderAbleId).price / 100 | currency:"€"}}</td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm" ng-click="dremoveOrder(groupedOrder)">
+                                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="orders">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Who</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="groupedOrder in prepareToFilter(orders) | filter:groupOrders">
+                            <td>{{getOrderWithOrderAbleId(orders, groupedOrder.orderAbleId).length}}</td>
+                            <td>{{getOrderAbleById(groupedOrder.orderAbleId).description}}</td>
+                            <td>{{getOrderAbleById(groupedOrder.orderAbleId).price / 100 | currency:"€"}}</td>
+                            <td><span ng-repeat="order in getOrderWithOrderAbleId(orders, groupedOrder.orderAbleId)">{{order.username}}<span ng-if="!$last">, </span></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Place order</h3>
+            </div>
+            <div class="panel-body">
+                <form>
+                    <div class="form-group" ng-show="locations.length > 1">
+                        <label>Location</label>
+                        <select class="form-control placeholder" ng-model="currentLocationId">
+                            <option value="" selected  disabled>Select location..</option>
+                            <option ng-repeat="location in locations" value="{{location._id}}">{{location.description}}</option>
+                        </select>
+                    </div>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#standard-order" aria-controls="home" role="tab" data-toggle="tab" ng-click="orderMenuType = 'standard';">Standard</a></li>
+                        <li role="presentation"><a href="#special-order" aria-controls="profile" role="tab" data-toggle="tab" ng-click="orderMenuType = 'custom';">Custom</a></li>
+                    </ul>
+
+                    <div class="tab-content" style="margin-top: 15px;">
+                        <div role="tabpanel" class="tab-pane active" id="standard-order">
+                            <div class="form-group">
+                                <label>Desired food</label>
+                                <select class="form-control placeholder" ng-model="currentOrderAbleId">
+                                    <option value="" selected  disabled>Select food..</option>
+                                    <option ng-repeat="orderAble in getOrderAbleItems(currentLocationId) | orderBy:'description'" value="{{orderAble._id}}">{{orderAble.description}} ({{orderAble.price / 100 | currency:"€"}})</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="special-order">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" class="form-control" ng-model="newOrderAble.description">
+                            </div>
+                            <div class="form-group">
+                                <label>Price (eurocents. e.g. 3,50 = 350)</label>
+                                <input type="number" class="form-control" ng-model="newOrderAble.price">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-default" style="float: right" ng-click="addOrder()">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+@media all and (min-width: 768px) {
+    #login-dropdown-list {
+        left: -170px;
+    }
+
+    #login-dropdown-list a {
+        float: right;
+    }
+}
+
+.placeholder{color: grey;}
+select option:first-child{color: grey; display: none;}
+select option{color: #555;}
