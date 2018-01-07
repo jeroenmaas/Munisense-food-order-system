@@ -1,0 +1,21 @@
+version: "3.2"
+services:
+    app:
+      build: .
+      ports:
+        - "80:3000"
+      links:
+        - mongo
+      volumes:
+        - type: bind
+          source: ./
+          target: /home/web/src/
+      environment:
+        - ROOT_URL=http://127.0.0.1
+        - MONGO_URL=mongodb://mongo:27017/meteor
+        - PORT=3000
+        - APP_ENV=production
+        - NODE_VERSION=0.10.48
+    mongo:
+      image: mongo:latest
+      command: mongod --storageEngine=wiredTiger
