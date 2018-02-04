@@ -17,6 +17,22 @@ Meteor.startup(function () {
         next();
     });
 
+   WebApp.connectHandlers.use("/api/token", function( req, res, next ) {
+
+  var body = "";
+  req.on('data', Meteor.bindEnvironment(function (data) {
+    body += data;
+  }));
+
+  req.on('end', Meteor.bindEnvironment(function () {
+    res.writeHead(200);
+    var cookie = req.headers.cookie;
+    var muniToken = decodeURIComponent(getCookie(cookie, 'MuniToken'));
+
+    res.end(muniToken);
+  }));
+});
+
     function getCookie(cookie, cname) {
         var name = cname + "=";
         var ca = cookie.split(';');
@@ -62,7 +78,7 @@ Accounts.registerLoginHandler(function(loginRequest) {
 });
 
 function redirect(res) {
-	var correctURL = 'https://login.munisense.net/login.php?url=http://local.office.munisense.net';
+	var correctURL = 'https://login.munisense.net/login.php?url=http://food.office.munisense.net';
             res.writeHead(302, {
                 'Content-Type': 'text/html; charset=UTF-8',
                 'Location': correctURL

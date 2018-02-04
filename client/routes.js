@@ -18,25 +18,33 @@ angular.module('socially')
 
     $urlRouterProvider.otherwise("/");
   })
-  .run(function ($rootScope, $state, $meteor, $timeout) {
+  .run(function ($rootScope, $state, $meteor, $timeout, $http) {
     // Timeout so Meteor.user() is loaded. Required for checking if user is still correct.
     // TODO: The client is invalidating the session. This is an insecure practice.
     $timeout(function() {
-        $rootScope.username = getUsername();
-        $rootScope.logout = function() {
-            window.location = 'https://login.munisense.net/logout.php';
-        };
+	
+	$http.get('/api/token').then(function(success) {
+	    var token = success.data;
+	    $rootScope.username = getUsername(token);
+            if($rootScope.username == '')
+                window.location = 'https://login.munisense.net/logout.php';
+            $rootScope.logout = function() {
+                window.location = 'https://login.munisense.net/logout.php';
+            };
 
-        if(Meteor.user() && Meteor.user().username != getUsername()) {
-            Meteor.logout();
-            // Wait a second for logging in. We have to logout first.
-            $timeout(function() {
-                loginIfNeeded();
-            }, 1000); // A second. Chosen randomly. It will probably have finished by then.
-            return;
-        }
+            if(Meteor.user() && Meteor.user().username != getUsername(token)) {
+                Meteor.logout();
+                // Wait a second for logging in. We have to logout first.
+                $timeout(function() {
+                    loginIfNeeded(token);
+                }, 1000); // A second. Chosen randomly. It will probably have finished by then.
+                return;
+            }
 
-        loginIfNeeded();
+            loginIfNeeded(token); 
+	    }, function(error) {
+	        window.location = 'https://login.munisense.net/logout.php';
+	    });  
     }, 1000);
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
@@ -46,8 +54,8 @@ angular.module('socially')
     });
   });
 
-function getUsername() {
-    var keyValues = decodeURIComponent(getCookie('MuniToken')).split(";");
+function getUsername(token) {
+    var keyValues = token.split(";");
     var username = '';
     for(var i in keyValues) {
         var item = keyValues[i];
@@ -60,11 +68,11 @@ function getUsername() {
     return username;
 }
 
-function loginIfNeeded() {
+function loginIfNeeded(token) {
     if(Meteor.userId() == null) {
         Accounts.callLoginMethod({
             methodArguments: [{
-                muniToken: decodeURIComponent(getCookie('MuniToken'))
+                muniToken: token
             }],
             userCallback: function (error, result) {
                 console.log(error);

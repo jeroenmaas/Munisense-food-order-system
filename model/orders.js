@@ -8,6 +8,6 @@ Orders.allow({
     return userId && order.owner === userId;
   },
   remove: function (userId, order) {
-    return userId && order.owner === userId;
+    return true;
   }
 });

@@ -25,7 +25,7 @@
                             <td>{{getOrderAbleById(groupedOrder.orderAbleId).description}}</td>
                             <td>{{getOrderAbleById(groupedOrder.orderAbleId).price / 100 | currency:"€"}}</td>
                             <td>
-                                <button type="button" class="btn btn-default btn-sm" ng-click="dremoveOrder(groupedOrder)">
+                                <button type="button" class="btn btn-default btn-sm" ng-click="removeOrder(groupedOrder)">
                                     <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                                 </button>
                             </td>
