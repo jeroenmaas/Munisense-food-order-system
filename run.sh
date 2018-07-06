@@ -73,7 +73,7 @@ elif [ "$APP_ENV" == "production" ] ; then
   # And extract the resulting tarball.
   cd $BUILD_BASE/
   echo "Unpacking build tarball..."
-  tar -xf src.tar.gz
+  bsdtar -xf src.tar.gz
 
   # Install required npm packages locally for the node app.
   cd bundle/programs/server
@@ -108,7 +108,8 @@ elif [ "$APP_ENV" == "production" ] ; then
     echo "If you only want to run on port 80, please use a reverse proxy like NGinX instead!"
     exit 1
   else
-    rm /home/web/.forever/meteorapp.log
+    mkdir /home/web/.forever
+    > /home/web/.forever/meteorapp.log
     forever start -l meteorapp.log main.js
     forever list
     tail -f /home/web/.forever/meteorapp.log
